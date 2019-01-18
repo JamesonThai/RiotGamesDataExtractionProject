@@ -119,15 +119,47 @@ def parseTimeline(filelist):
 	outfile.close()
 
 	# Actual Parsing
-	constant = {"gameId":0}
 	for file in filelist:
 		specfile = "data/matchTimelines/" + file
-		check = False
+		gameId = file[:file.find("m")]
+		check, innerCheck = True, True
 		with open(specfile,"r") as outfile:
 			for line in outfile: 
-				if "participantId" in line:
-					print(line)
-
+				if "participantFrames" in line:
+					check = False
+					events['gameId'] = gameId
+					eventsLists.append(events)
+					events = {}
+				elif "events" in line:
+					check = True
+					participants['gameId'] = gameId
+					participantList.append(participants)
+					participants = {}
+				elif "levelUpType" in line:
+					count = 0
+					while count < 5:
+						line = next(outfile)
+						count += 1
+				else: 
+					label = line[1:line.find(':')].replace('"', "").strip()
+					value = line[line.find(':') + 1:len(line)-1].replace('"',"").replace(",","").strip()
+					# Events
+					if check and label in labelEvents:
+						# Adding previous to eventListing
+						if label != None and label in events.keys():
+							if events[label] != value: 
+								events['gameID'] = gameId
+								eventsLists.append(events)
+								events = {}
+						events[label] = value
+					# participantFrames
+					elif check == False and label in labelParticipants:
+						# Need to do the same for participants as done for events
+						participants[label] = value
+		# print(eventsLists)
+		timelineData.append(eventsLists)
+		timelineData.append(participantList)
+		outfile.close()
 
 	return timelineData
 
