@@ -32,17 +32,19 @@ def getPlayerMatch(region, matchID, API_KEY, version):
 	response = requests.get(URL)
 	return response.json()
 
+# Rename such that it is labeled by gameID
 def getPlayerTimeline(region, matchID, API_KEY, version):
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/timelines/by-match/" + str(matchID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
 	return response.json()
 
 def aggregateData(matches, summonerName, region, API_KEY, version):
+	# Need to get list of matches
 	matchID = matches[0]
 	match = getPlayerMatch(region, matchID, API_KEY, version)
 	matchTimeline = getPlayerTimeline(region, matchID, API_KEY, version)
-	matchName = "data/matches/" + summonerName +"match.json"
-	matchTimelineName = "data/matchTimelines/" + summonerName + "matchTimeline.json"
+	matchName = "data/matches/" + str(matchID) + "match.json"
+	matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
 	with open(matchName,"w") as outfile:
 		json.dump(match, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 
@@ -91,7 +93,7 @@ def main():
 	# In analysis look at Win or not, if not win look at kda, if KDA is low then ignore entirely
 	# summonerID = 31576070
 	league = ""
-	API_KEY = ""
+	API_KEY = "RGAPI-b9119230-46d2-4fe5-9f0e-5a14b4c50e1d"
 	version = "v4"
 	responseJson = getSummonerName(region, summonerName, API_KEY, version)
 	summonerID = responseJson['id']
@@ -119,6 +121,9 @@ def main():
 		i += 1
 
 	aggregateData(matches, summonerName, region, API_KEY, version)
+
+	# Note 100 Requests every 2 minutes
+	
 	# Breaking Information
 	# GameInformation 
 		# gameCreation, gameDuration, gameId, gameMode, gameType, gameVersion, 
