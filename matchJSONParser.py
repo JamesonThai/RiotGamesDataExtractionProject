@@ -156,10 +156,16 @@ def parseTimeline(filelist):
 					elif check == False and label in labelParticipants:
 						# Need to do the same for participants as done for events
 						participants[label] = value
-		# print(eventsLists)
+						if "xp" in label: 
+							participants['gameId'] = gameId
+							participantList.append(participants)
+							participants = {}
+		
 		timelineData.append(eventsLists)
 		timelineData.append(participantList)
 		outfile.close()
+		for item in participantList:
+			print(item)
 
 	return timelineData
 
