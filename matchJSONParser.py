@@ -57,41 +57,43 @@ def parseMatchJson(listOfMatchFiles):
 						participantList.append(Participants)
 						# For Resetting
 						Participants = {}
+				# For Stats
 				elif label in labelStats:
-					# Deltas Check
-					if label in deltas:
-						deltaValues = {}
-						count = 0
-						while count < 2:
-							line = next(outfile)
-							label = line[line.find('"')+1:line.find(":")-1].strip()
-							value = line[line.find(':') + 1:len(line)-1].replace('"',"").strip()
-							deltaValues[label] = value
-							count += 1
-						value = deltaValues
-					Stats[label] = value
-					if label in "trueDamageTaken":
+					if label in "championId" and Stats != None:
 						Stats["gameId"] = constants["gameId"]
 						statsList.append(Stats)
-						# For Resetting
 						Stats = {}
+					# Deltas Check Still a problem with deltas
+					if label in deltas:
+						listing = []
+						while label not in "},":
+							line = next(outfile)
+							label = line[line.find('"')+1:line.find(":")-1].replace('"',"").strip()
+							if label in "}" or label in "},":
+								break
+							value = line[line.find(":"):].replace(",","").strip()
+							listing.append(value)
+					# Not A Delta
+					Stats[label] = value
+
+		for item in statsList[1]:
+			print(item, statsList[1][item])
 
 		outfile.close()
 		coreList.append(core)
-		core = {}
+		
 		# print(participantList)
 		# print(statsList)
 		# check for missing values can take out later
 		# for key in labelCore:
-		# 	if core[key] is None:
-		# 		print("core",key)
-		# for key in Participants:
-		# 	if Participants[key] is None:
-		# 		print("Participants", key)
-		# for key in Stats:
-		# 	if Stats[key] is None:
-		# 		print("Stats", key)
-
+				# print("core",core[key])
+		# for parti in participantList:
+			# for item in parti:
+				# print(item, parti[item])
+		# for st in statsList:
+			# for item in st:
+				# print(item, st[item])
+		core = {}
 		matchListData.append(coreList)
 		matchListData.append(participantList)
 		matchListData.append(statsList)
@@ -146,7 +148,7 @@ def parseTimeline(filelist):
 					# Events
 					if check and label in labelEvents:
 						# Adding previous to eventListing
-						if label != None and label in events.keys():
+						if label in events.keys():
 							if events[label] != value: 
 								events['gameID'] = gameId
 								eventsLists.append(events)
@@ -164,8 +166,6 @@ def parseTimeline(filelist):
 		timelineData.append(eventsLists)
 		timelineData.append(participantList)
 		outfile.close()
-		for item in participantList:
-			print(item)
 
 	return timelineData
 
