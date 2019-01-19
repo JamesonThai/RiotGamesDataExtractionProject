@@ -47,10 +47,8 @@ def parseMatchJson(listOfMatchFiles):
 				# If value if found, store it in a dictionary
 				if label in labelCore:
 					core[label] = value
-					# print(label,value)
 				elif (label in labelParticipants) and (check == False):
 					Participants[label] = value
-					# print(label,value)
 					if label in "summonerName":
 						# last item push everything
 						Participants["gameId"] = constants["gameId"]
@@ -73,23 +71,18 @@ def parseMatchJson(listOfMatchFiles):
 							if label in "}" or label in "},":
 								break
 							numValue = line[line.find(":")+1:].replace(",","").strip()
-							# print(value)
 							listing.append(numValue)
 						value = listing
 					# Not A Delta
 					Stats[previousLabel] = value
 
-		for item in statsList[1]:
-			print(item, statsList[1][item])
-
 		outfile.close()
+		core["gameId"] = constants["gameId"]
 		coreList.append(core)
 		
-		# print(participantList)
-		# print(statsList)
 		# check for missing values can take out later
-		# for key in labelCore:
-				# print("core",core[key])
+		# for key in core:
+			# print(key, core[key])
 		# for parti in participantList:
 			# for item in parti:
 				# print(item, parti[item])
@@ -159,8 +152,8 @@ def parseTimeline(filelist):
 						events[label] = value
 					# participantFrames
 					elif check == False and label in labelParticipants:
-						# Need to do the same for participants as done for events
 						participants[label] = value
+						# xp is the last thing in Events so push everything into the event list
 						if "xp" in label: 
 							participants['gameId'] = gameId
 							participantList.append(participants)
@@ -188,6 +181,7 @@ def main():
 	matchListing = parseMatchJson(fileMatchList)
 	matchTimelines = parseTimeline(fileMatchTimelineList)
 
-	# print(fileMatchTimelineList)
+
+
 if __name__ == "__main__":
 	main()
