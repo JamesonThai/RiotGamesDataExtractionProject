@@ -63,18 +63,21 @@ def parseMatchJson(listOfMatchFiles):
 						Stats["gameId"] = constants["gameId"]
 						statsList.append(Stats)
 						Stats = {}
+					previousLabel = label
 					# Deltas Check Still a problem with deltas
 					if label in deltas:
 						listing = []
-						while label not in "},":
+						while label not in "}":
 							line = next(outfile)
 							label = line[line.find('"')+1:line.find(":")-1].replace('"',"").strip()
 							if label in "}" or label in "},":
 								break
-							value = line[line.find(":"):].replace(",","").strip()
-							listing.append(value)
+							numValue = line[line.find(":")+1:].replace(",","").strip()
+							# print(value)
+							listing.append(numValue)
+						value = listing
 					# Not A Delta
-					Stats[label] = value
+					Stats[previousLabel] = value
 
 		for item in statsList[1]:
 			print(item, statsList[1][item])
