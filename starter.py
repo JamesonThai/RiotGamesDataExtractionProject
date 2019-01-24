@@ -93,7 +93,7 @@ def main():
 	# In analysis look at Win or not, if not win look at kda, if KDA is low then ignore entirely
 	# summonerID = 31576070
 	league = ""
-	API_KEY = "RGAPI-b9119230-46d2-4fe5-9f0e-5a14b4c50e1d"
+	API_KEY = ""
 	version = "v4"
 	responseJson = getSummonerName(region, summonerName, API_KEY, version)
 	summonerID = responseJson['id']
