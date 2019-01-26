@@ -60,10 +60,11 @@ def getSeenGames():
 	return seenGames
 
 def getPlayerAccId(proPlayerList, regions, API_KEY, version):
-	proListing = {}
-	for item in proPlayerList:
-		response = getSummonerName(region, item, API_KEY, version)
-		break
+	# proListing = {}
+	# for item in proPlayerList:
+		# response = getSummonerName(region, item, API_KEY, version)
+		# break
+	response = getSummonerName()
 
 def runScheduler(sc):
     # print "Doing stuff..."
@@ -74,7 +75,7 @@ def runScheduler(sc):
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = ""
+	API_KEY = "RGAPI-a692cb99-a968-4a5d-bc7c-8067b8766c87"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -92,7 +93,7 @@ def main():
 	}
 	proList = getProPlayers()
 	seenGames = getSeenGames()
-	playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
+	playerAccIds = getPlayerAccId({"Doctor Mister", regions, API_KEY, version)
 
 	# s = sched.scheduler(time.time, time.sleep)
 	# s.enter(60, 1, runScheduler(), (s,))
