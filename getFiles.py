@@ -75,7 +75,7 @@ def runScheduler(sc):
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-a692cb99-a968-4a5d-bc7c-8067b8766c87"
+	API_KEY = ""
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
