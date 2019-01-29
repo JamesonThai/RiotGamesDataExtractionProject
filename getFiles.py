@@ -6,10 +6,7 @@
 
 	Written and Documented by: Jameson Thai
 """
-import requests
-import json
-import sched, time
-
+import requests, json, time
 
 """
 	param: region, the corresponding region that is being called
@@ -26,13 +23,19 @@ def getPlayerMatches(region, accID, API_KEY, version):
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matchlists/by-account/" + str(accID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
 	return response.json()
-
+"""
+"""
 def getSummonerName(region, summonerName, API_KEY, version):
-	# Sample https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/RiotSchmick?api_key=<key>
+	# Sample https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/RiotSchmick?api_key=<key>
 	URL = "https://" + region + ".api.riotgames.com/lol/summoner/" + version + "/summoners/by-name/" + summonerName + "?api_key=" + API_KEY
 	# URL = "https://na1.api.riotgames.com/lol/summoner/" + version + "/summoners/by-name/" + summonerName
 	response = requests.get(URL)
-	return response.json()
+	# if response == 200:
+	statusCode = response.raise_for_status()
+	if statusCode == None:
+		return response.json()
+	else:
+		return "error"
 
 """
 	getProPlayers extracts from the list of proplayers already extracted into a list format
@@ -45,11 +48,12 @@ def getProPlayers():
 	with open(path,"r") as outfile:
 		for line in outfile:
 			ign = line[:line.find("|")].strip()
-			realName = line[line.find("|")+1:].strip()
-			proList[ign] = realName
+			region = line[line.find("|")+1:].strip()
+			proList[ign] = region
 	outfile.close()
 	return proList
-
+"""
+"""
 def getSeenGames():
 	path = "data/seenGameIDs.txt"
 	seenGames = []
@@ -59,23 +63,32 @@ def getSeenGames():
 	outfile.close()
 	return seenGames
 
+"""
+	Return: In the format of a dictionary of PlayerID(SummonerName) and region as key value pairing 
+"""
 def getPlayerAccId(proPlayerList, regions, API_KEY, version):
-	# proListing = {}
-	# for item in proPlayerList:
-		# response = getSummonerName(region, item, API_KEY, version)
-		# break
-	response = getSummonerName()
+	tempString = ""
+	listOfAccounts = {}
+	for player in proPlayerList:
+		try:
+			playerID = getSummonerName(regions[proPlayerList[player]], player, API_KEY, version)
+			listOfAccounts[playerID["accountId"]] = player + " : " + str(regions[proPlayerList[player]])
+		except:
+			print("Error for ", player)
+		time.sleep(.9)
+	return listOfAccounts
 
-def runScheduler(sc):
-    # print "Doing stuff..."
-    # do your stuff
-    s.enter(60, 1, runScheduler(), (sc,))
-    print("DoingSomething")
+"""
+"""
+def getAllOfPlayersMatches(playerAccIds, API_KEY, version)
+	ListOfMatches = []
+	getPlayerMatches(region, accID, API_KEY, version):
+
 """
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = ""
+	API_KEY = "RGAPI-95974be2-4bae-4aba-8e36-afc37d540b0a"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -83,21 +96,18 @@ def main():
 		"EUNE" : "eun1",
 		"EUW"  : "euw1",
 		"JP"   : "jp1",
-		"KR"   : "kr1",
+		"KR"   : "kr",
 		"LAS"  : "la1",
 		"LAN"  : "la2",
 		"OCE"  : "oc1",
 		"TR"   : "tr1",
-		"RU"   : "ru1",
+		"RU"   : "ru",
 		"PBE"  : "pbe1",
 	}
 	proList = getProPlayers()
 	seenGames = getSeenGames()
-	playerAccIds = getPlayerAccId({"Doctor Mister", regions, API_KEY, version)
-
-	# s = sched.scheduler(time.time, time.sleep)
-	# s.enter(60, 1, runScheduler(), (s,))
-	# s.run()
+	playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
+	playerMatches = getAllOfPlayersMatches(playerAccIds, proList, API_KEY, version)
 
 if __name__ == "__main__":
 	main()
