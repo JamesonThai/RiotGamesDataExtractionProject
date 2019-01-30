@@ -23,6 +23,18 @@ def getPlayerMatches(region, accID, API_KEY, version):
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matchlists/by-account/" + str(accID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
 	return response.json()
+
+def getPlayerMatch(region, matchID, API_KEY, version):
+	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matches/" + str(matchID) + "?api_key=" + API_KEY
+	response = requests.get(URL)
+	return response.json()
+
+# Rename such that it is labeled by gameID
+def getPlayerTimeline(region, matchID, API_KEY, version):
+	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/timelines/by-match/" + str(matchID) + "?api_key=" + API_KEY
+	response = requests.get(URL)
+	return response.json()
+
 """
 """
 def getSummonerName(region, summonerName, API_KEY, version):
@@ -52,6 +64,7 @@ def getProPlayers():
 			proList[ign] = region
 	outfile.close()
 	return proList
+
 """
 """
 def getSeenGames():
@@ -69,26 +82,70 @@ def getSeenGames():
 def getPlayerAccId(proPlayerList, regions, API_KEY, version):
 	tempString = ""
 	listOfAccounts = {}
-	for player in proPlayerList:
-		try:
-			playerID = getSummonerName(regions[proPlayerList[player]], player, API_KEY, version)
-			listOfAccounts[playerID["accountId"]] = player + " : " + str(regions[proPlayerList[player]])
-		except:
-			print("Error for ", player)
-		time.sleep(.9)
+	# Temp read and write for now
+	with open ("data/tempAccs.txt", "w") as outfile:
+		for player in proPlayerList:
+			try:
+				playerID = getSummonerName(regions[proPlayerList[player]], player, API_KEY, version)
+				listOfAccounts[playerID["accountId"]] = player + " : " + str(regions[proPlayerList[player]])
+				# Temporary write for now
+				outfile.write(player + "|" + str(regions[proPlayerList[player]]) + "|" + playerID["accountId"] + "\n")
+			except:
+				print("No Data for ", player)
+			time.sleep(.9)
 	return listOfAccounts
+
+def aggregateData(matches, summonerName, region, API_KEY, version):
+	# Need to get list of matches
+	matchID = matches[0]
+	match = getPlayerMatch(region, matchID, API_KEY, version)
+	matchTimeline = getPlayerTimeline(region, matchID, API_KEY, version)
+	matchName = "data/matches/" + str(matchID) + "match.json"
+	matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
+	with open(matchName,"w") as outfile:
+		json.dump(match, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+
+	with open(matchTimelineName,"w") as outTime:
+		json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
 
 """
 """
-def getAllOfPlayersMatches(playerAccIds, API_KEY, version)
+def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	ListOfMatches = []
-	getPlayerMatches(region, accID, API_KEY, version):
+	for playerACC in playerAccIds: 
+		region = playerAccIds[playerACC][playerAccIds[playerACC].find(":") + 1:].strip()
+		matches = getPlayerMatches(region, playerACC, API_KEY, version)
+		numberOfGames = len(matches['matches'])
+
+		i = 0
+		while i < numberOfGames: 
+			matchID = matches['matches'][i]['gameId']
+			temp = str(matchID) + "\n"
+			if temp not in seenGames:
+				matchData = getPlayerMatch(region, matchID, API_KEY, version)
+				matchTimeline = getPlayerTimeline(region, matchID, API_KEY, version)
+				matchName = "data/matches/" + str(matchID) + "match.json"
+				matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
+				# Dump that data
+				with open(matchName,"w") as outfile:
+					json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+				outfile.close()
+				with open(matchTimelineName,"w") as outTime:
+					json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
+				outTime.close()
+				with open("data/seenGameIDs.txt","w") as out:
+					out.write(str(matchID) + "\n")
+				out.close()
+			i += 1
+		time.sleep(.9)
+		# Don't unbreak this unless you want 400+ players * # of n games
+		break
 
 """
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-95974be2-4bae-4aba-8e36-afc37d540b0a"
+	API_KEY = "RGAPI-2809e3e8-1012-4674-b2ba-a88efa2924dd"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -106,8 +163,17 @@ def main():
 	}
 	proList = getProPlayers()
 	seenGames = getSeenGames()
-	playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
-	playerMatches = getAllOfPlayersMatches(playerAccIds, proList, API_KEY, version)
+	# playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
+	# Temporarily for utility 
+	playerAccIds = {}
+	with open("data/tempAccs.txt", "r") as outfile:
+		for line in outfile:
+			temp = line[line.find("|") + 1:] 
+			region = temp[:temp.find("|")].strip()
+			accID = temp[temp.find("|") + 1 :].strip()
+			playerAccIds[accID] = region
+	outfile.close()
+	playerMatches = getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
 
 if __name__ == "__main__":
 	main()
