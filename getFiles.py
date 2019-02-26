@@ -158,6 +158,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 				outSeen.close()
 			i += 1
 			time.sleep(1.5)
+			break
 		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
 		break
 
@@ -165,7 +166,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-8ae14c6a-c534-48e2-a732-94054e0842ab"
+	API_KEY = "RGAPI-78166a42-b46f-4015-9641-d99b155e956d"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
