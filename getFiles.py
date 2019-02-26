@@ -22,7 +22,7 @@ def getPlayerMatches(region, accID, API_KEY, version):
 	# https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/46262064
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matchlists/by-account/" + str(accID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
-	return response.json()
+	return response.json(), response.status_code
 
 """
 	param region:	the corresponding region that is being called
@@ -35,7 +35,7 @@ def getPlayerMatches(region, accID, API_KEY, version):
 def getPlayerMatch(region, matchID, API_KEY, version):
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matches/" + str(matchID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
-	return response.json()
+	return response.json(), response.status_code
 
 """
 	param region:	the corresponding region that is being called
@@ -48,7 +48,7 @@ def getPlayerMatch(region, matchID, API_KEY, version):
 def getPlayerTimeline(region, matchID, API_KEY, version):
 	URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/timelines/by-match/" + str(matchID) + "?api_key=" + API_KEY
 	response = requests.get(URL)
-	return response.json()
+	return response.json(), response.status_code
 
 """
 	param region:			the corresponding region that is being called
@@ -66,7 +66,7 @@ def getSummonerName(region, summonerName, API_KEY, version):
 	# if response == 200:
 	statusCode = response.raise_for_status()
 	if statusCode == None:
-		return response.json()
+		return response.json(), response.status_code
 	else:
 		return "error"
 
@@ -134,33 +134,43 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	ListOfMatches = []
 	for playerACC in playerAccIds: 
 		region = playerAccIds[playerACC][playerAccIds[playerACC].find(":") + 1:].strip()
-		matches = getPlayerMatches(region, playerACC, API_KEY, version)
+		matches, responseCode = getPlayerMatches(region, playerACC, API_KEY, version)
 		numberOfGames = len(matches['matches'])
-
+		# If response code does not equal to 429
 		i = 0
 		while i < numberOfGames: 
 			matchID = matches['matches'][i]['gameId']
 			temp = str(matchID) + "\n"
+			print("Checking:", playerACC, str(matchID))
 			if temp not in seenGames:
-				matchData = getPlayerMatch(region, matchID, API_KEY, version)
-				matchTimeline = getPlayerTimeline(region, matchID, API_KEY, version)
-				matchName = "data/matches/" + str(matchID) + "match.json"
-				matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
-				# Dump that data
-				with open(matchName,"w") as outfile:
-					json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
-				outfile.close()
-				with open(matchTimelineName,"w") as outTime:
-					json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
-				outTime.close()
-				with open("data/seenGameIDs.txt","a") as outSeen:
-					outSeen.write(str(matchID) + "\n")
-				outSeen.close()
+				matchData, matchResponseCode = getPlayerMatch(region, matchID, API_KEY, version)
+				matchTimeline, matchTimeResponseCode = getPlayerTimeline(region, matchID, API_KEY, version)
+				if matchResponseCode == 200 and matchTimeResponseCode == 200:
+					print("Response is 200")
+					matchName = "data/matches/" + str(matchID) + "match.json"
+					matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
+					# Dump that data
+					with open(matchName,"w") as outfile:
+						json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+					outfile.close()
+					with open(matchTimelineName,"w") as outTime:
+						json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
+					outTime.close()
+					with open("data/seenGameIDs.txt","a") as outSeen:
+						outSeen.write(str(matchID) + "\n")
+					outSeen.close()
+				else:
+					print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
+					with open("data/failedEntries.txt", "a") as unseen:
+						unseen.write(temp)
+					unseen.close()
+					# Need more time
+					time.sleep(20)
+					# i -= 1
 			i += 1
 			time.sleep(1.5)
-			break
 		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
-		break
+		# break
 
 """
 	Temporary Main File For testing Remove Later
@@ -194,7 +204,8 @@ def main():
 			accID = temp[temp.find("|") + 1 :].strip()
 			playerAccIds[accID] = region
 	outfile.close()
-	playerMatches = getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
-
+	getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
+	# Need to do a rerun of failed entries
+	
 if __name__ == "__main__":
 	main()

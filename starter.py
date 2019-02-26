@@ -93,7 +93,7 @@ def main():
 	# In analysis look at Win or not, if not win look at kda, if KDA is low then ignore entirely
 	# summonerID = 31576070
 	league = ""
-	API_KEY = "RGAPI-17182aea-162f-4f49-aad5-d8c9cf2a1ce6"
+	API_KEY = "RGAPI-78166a42-b46f-4015-9641-d99b155e956d"
 	version = "v4"
 	responseJson = getSummonerName(region, summonerName, API_KEY, version)
 	summonerID = responseJson['id']
@@ -120,7 +120,19 @@ def main():
 		matches.append(matchID)
 		i += 1
 
-	aggregateData(matches, summonerName, region, API_KEY, version)
+	# Trial to check response code
+	i = 0
+	print(matches[0])
+	while i < 100:
+		URL = "https://" + region + ".api.riotgames.com/lol/match/" + version + "/matches/" + str(matchID) + "?api_key=" + API_KEY
+		response = requests.get(URL)
+		header = response.headers
+		# for item in header:
+		print(i, type(response.status_code))
+		i += 1
+
+
+	# aggregateData(matches, summonerName, region, API_KEY, version)
 
 	# Note 100 Requests every 2 minutes
 	
