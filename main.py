@@ -5,7 +5,7 @@
 """
 def main():
 	# Constants
-	API_KEY = "RGAPI-2809e3e8-1012-4674-b2ba-a88efa2924dd"
+	API_KEY = "RGAPI-8ae14c6a-c534-48e2-a732-94054e0842ab"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -38,5 +38,6 @@ def main():
 	outfile.close()
 	playerMatches = getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
 
+	
 if __name__ == "__main__":
 	main()

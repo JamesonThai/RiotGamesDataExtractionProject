@@ -121,7 +121,7 @@ def getPlayerAccId(proPlayerList, regions, API_KEY, version):
 				outfile.write(player + "|" + str(regions[proPlayerList[player]]) + "|" + playerID["accountId"] + "\n")
 			except:
 				print("No Data for ", player)
-			time.sleep(.9)
+			time.sleep(1.5)
 	return listOfAccounts
 
 """
@@ -153,11 +153,11 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 				with open(matchTimelineName,"w") as outTime:
 					json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
 				outTime.close()
-				with open("data/seenGameIDs.txt","w") as out:
-					out.write(str(matchID) + "\n")
-				out.close()
+				with open("data/seenGameIDs.txt","a") as outSeen:
+					outSeen.write(str(matchID) + "\n")
+				outSeen.close()
 			i += 1
-			time.sleep(.9)
+			time.sleep(1.5)
 		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
 		break
 
@@ -165,7 +165,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-2809e3e8-1012-4674-b2ba-a88efa2924dd"
+	API_KEY = "RGAPI-8ae14c6a-c534-48e2-a732-94054e0842ab"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
