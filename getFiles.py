@@ -179,9 +179,9 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 				i += 1
 				time.sleep(wait)
 		else:
-			print("no match data detected", failedAcc)
+			print("no match data detected", playerACC)
 			with open("data/failedAccounts.txt", "a", encoding="utf8") as failedAcc:
-				failedAcc.write(failedAcc)
+				failedAcc.write(playerACC)
 			failedAcc.close()
 
 """
