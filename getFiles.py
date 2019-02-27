@@ -161,9 +161,9 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 						outSeen.write(str(matchID) + "\n")
 					outSeen.close()
 					wait = 2
-				elif matchResponseCode == 429 or matchTimeResponseCode == 429:
+				elif matchResponseCode == 429 and matchTimeResponseCode == 429:
 					i -= 1
-					wait = 4
+					wait = 8
 				else:
 					print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
 					with open("data/failedEntries.txt", "a",  encoding="utf8") as unseen:
@@ -174,7 +174,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 					# i -= 1
 					wait = 2
 			else:
-				wait = 0.1
+				wait = 0.01
 			i += 1
 			time.sleep(wait)
 
