@@ -112,7 +112,7 @@ def getPlayerAccId(proPlayerList, regions, API_KEY, version):
 	tempString = ""
 	listOfAccounts = {}
 	# Temp read and write for now
-	with open ("data/tempAccs.txt", "w") as outfile:
+	with open ("data/tempAccs.txt", "w",  encoding="utf8") as outfile:
 		for player in proPlayerList:
 			try:
 				playerID = getSummonerName(regions[proPlayerList[player]], player, API_KEY, version)
@@ -150,25 +150,25 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 					matchName = "data/matches/" + str(matchID) + "match.json"
 					matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
 					# Dump that data
-					with open(matchName,"w") as outfile:
+					with open(matchName,"w",  encoding="utf8") as outfile:
 						json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
 					outfile.close()
-					with open(matchTimelineName,"w") as outTime:
+					with open(matchTimelineName,"w",  encoding="utf8") as outTime:
 						json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
 					outTime.close()
-					with open("data/seenGameIDs.txt","a") as outSeen:
+					with open("data/seenGameIDs.txt","a",  encoding="utf8") as outSeen:
 						outSeen.write(str(matchID) + "\n")
 					outSeen.close()
 				else:
 					print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
-					with open("data/failedEntries.txt", "a") as unseen:
+					with open("data/failedEntries.txt", "a",  encoding="utf8") as unseen:
 						unseen.write(temp)
 					unseen.close()
 					# Need more time
 					time.sleep(20)
 					# i -= 1
 			i += 1
-			time.sleep(1.5)
+			time.sleep(2)
 		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
 		# break
 
@@ -176,7 +176,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-78166a42-b46f-4015-9641-d99b155e956d"
+	API_KEY = "RGAPI-ea7587e8-cf05-4a2d-bcfc-51d4ccb0684e"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -197,7 +197,7 @@ def main():
 	# playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
 	# Temporarily for utility 
 	playerAccIds = {}
-	with open("data/tempAccs.txt", "r") as outfile:
+	with open("data/tempAccs.txt", "r",  encoding="utf8") as outfile:
 		for line in outfile:
 			temp = line[line.find("|") + 1:] 
 			region = temp[:temp.find("|")].strip()
