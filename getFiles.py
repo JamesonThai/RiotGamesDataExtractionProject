@@ -138,6 +138,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 		numberOfGames = len(matches['matches'])
 		# If response code does not equal to 429
 		i = 0
+		wait = 0
 		while i < numberOfGames: 
 			matchID = matches['matches'][i]['gameId']
 			temp = str(matchID) + "\n"
@@ -159,18 +160,23 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 					with open("data/seenGameIDs.txt","a",  encoding="utf8") as outSeen:
 						outSeen.write(str(matchID) + "\n")
 					outSeen.close()
+					wait = 2
+				elif matchResponseCode == 429 or matchTimeResponseCode == 429:
+					i -= 1
+					wait = 4
 				else:
 					print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
 					with open("data/failedEntries.txt", "a",  encoding="utf8") as unseen:
 						unseen.write(temp)
 					unseen.close()
 					# Need more time
-					time.sleep(20)
+					time.sleep(18)
 					# i -= 1
+					wait = 2
+			else:
+				wait = 0.1
 			i += 1
-			time.sleep(2)
-		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
-		# break
+			time.sleep(wait)
 
 """
 	Temporary Main File For testing Remove Later
