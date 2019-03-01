@@ -264,24 +264,33 @@ def populateList(category):
                 listing.append(file)
     return listing
 
-def seenGameId(gameId):
-    with open(""):
+def partitionrun(matchlist, matchtimelist, limiter):
+    k_instances = len(matchlist) / limiter
+    remainders = len(matchlist) % limiter
+    print(len(matchlist), k_instances, remainders)
+    i = 0
+    while i < k_instances:
 
 def main():
-    fileMatchList = populateList("matches")
-    fileMatchTimelineList = populateList("matchTimelines")
+    filematchlist = populateList("matches")
+    filematchtimelinelist = populateList("matchTimelines")
 
     # Parse through list of matches
     print("parsing matches")
     # Need to introduce limiter by splitting size by 1k
     # resultingList = parseMatchJson(fileMatchList)
+    # Need to make headers work for both timeline and match
     coreHeader, partHeaders, statsHeaders = getHeaders()
-    # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
-    timelinePartci.append("gameId")
-    timelineEvents.append("gameId")
+
     # To initialize CSV's
     print("init CSV")
-    initCSV(coreHeader, partHeaders, statsHeaders, timelinePartci, timelineEvents)
+    # initCSV(coreHeader, partHeaders, statsHeaders, timelinePartci, timelineEvents)
+
+    partitionrun(filematchlist, filematchtimelinelist, 1000)
+
+    # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
+    # timelinePartci.append("gameId")
+    # timelineEvents.append("gameId")
     # Actual updating
     # updateCSV(resultingList[0], "data/dataframes/matchcores.csv", coreHeader)
     # updateCSV(resultingList[1], "data/dataframes/matchparticipants.csv", partHeaders)
