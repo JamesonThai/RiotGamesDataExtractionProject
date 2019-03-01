@@ -3,27 +3,40 @@ import os, csv
 
 # Only call this once
 def getHeaders():
-    coreHeaders, participantsHeaders, statsHeaders = [], [], []
+    core_headers, participants_headers, stats_headers = [], [], []
+    label_participants, label_events = [],[]
     print("obtaining headers")
     with open('data/DataFrameMatchesOrdering.txt', 'r', encoding="utf8") as infile:
         next(infile)
         listing = []
         for line in infile:
             if "Participants" in line:
-                coreHeaders = listing
-                coreHeaders.append('gameId')
+                core_headers = listing
+                core_headers.append('gameId')
                 listing = []
             elif "Stats" in line:
-                participantsHeaders = listing
-                participantsHeaders.append('gameId')
+                participants_headers = listing
+                participants_headers.append('gameId')
                 listing = []
             else:
                 line = line.rstrip()
                 listing.append(line)
-        statsHeaders = listing
-        statsHeaders.append('gameId')
+        stats_headers = listing
+        stats_headers.append('gameId')
     infile.close()
-    return coreHeaders, participantsHeaders, statsHeaders
+    with open("data/DataFrameOrderingMT.txt", "r", encoding="utf8") as outfile:
+        next(outfile)
+        listing = []
+        for line in outfile:
+            if "Events" in line:
+                label_participants = listing
+                listing = []
+            else:
+                line = line.rstrip()
+                listing.append(line)
+        label_events = listing
+    outfile.close()
+    return core_headers, participants_headers, stats_headers, label_participants, label_events
 
 
 def initCSV(coreHeaders, participantsHeaders, statsHeaders, timelinePartci, timelineEvents):
@@ -251,7 +264,7 @@ def parseTimeline(filelist):
         timelineData.append(eventsLists)
         timelineData.append(participantList)
         outfile.close()
-    return timelineData, labelParticipants, labelEvents
+    return timelineData
 
 
 def populateList(category):
@@ -275,6 +288,7 @@ def partitionrun(matchlist, matchtimelist, limiter):
         # print("remainder", i, len(matchlist[i*limiter:]))
         resulting_list = parseMatchJson(matchlist[i * limiter: (i+1) * limiter])
         resulting_timeline = parseTimeline(matchtimelist[i * limiter: (i+1) * limiter])
+        break
         # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
         # timelinePartci.append("gameId")
         # timelineEvents.append("gameId")
@@ -298,14 +312,15 @@ def main():
     # Parse through list of matches
     print("parsing matches")
     # Need to make headers work for both timeline and match
-    coreHeader, partHeaders, statsHeaders = getHeaders()
-
+    core_header, part_headers, stats_headers, timeline_parti, timeline_events = getHeaders()
+    timeline_parti.append("gameId")
+    timeline_events.append("gameId")
     # To initialize CSV's
     print("init CSV")
     # Probably need to rework header file
-    # initCSV(coreHeader, partHeaders, statsHeaders, timelinePartci, timelineEvents)
+    initCSV(core_header, part_headers, stats_headers, timeline_parti, timeline_events)
 
-    partitionrun(filematchlist, filematchtimelinelist, 1000)
+    # partitionrun(filematchlist, filematchtimelinelist, 1000)
 
     # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
     # timelinePartci.append("gameId")
