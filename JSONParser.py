@@ -267,23 +267,42 @@ def populateList(category):
 def partitionrun(matchlist, matchtimelist, limiter):
     k_instances = len(matchlist) / limiter
     remainders = len(matchlist) % limiter
-    print(len(matchlist), k_instances, remainders)
+    # print(len(matchlist), k_instances, remainders)
     i = 0
+    # Initial run for k instances of limiter size
     while i < k_instances:
-
+        # print(i, matchlist[i*limiter:(i+1) * limiter])
+        # print("remainder", i, len(matchlist[i*limiter:]))
+        resulting_list = parseMatchJson(matchlist[i * limiter: (i+1) * limiter])
+        resulting_timeline = parseTimeline(matchtimelist[i * limiter: (i+1) * limiter])
+        # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
+        # timelinePartci.append("gameId")
+        # timelineEvents.append("gameId")
+        # Actual updating
+        # updateCSV(resultingList[0], "data/dataframes/matchcores.csv", coreHeader)
+        # updateCSV(resultingList[1], "data/dataframes/matchparticipants.csv", partHeaders)
+        # resultingList[2].pop(0)
+        # n = resultingList[2]
+        # updateCSV(n, "data/dataframes/matchstats.csv", statsHeaders)
+        # resultTimelines[0].pop(0)
+        # resultTimelines[1].pop(0)
+        # updateCSV(resultTimelines[0], "data/dataframes/timelineEvents.csv", timelineEvents)
+        # updateCSV(resultTimelines[1], "data/dataframes/timelineParticipants.csv", timelinePartci)
+        i += 1
+    i -= 1
+    # print(i)
 def main():
     filematchlist = populateList("matches")
     filematchtimelinelist = populateList("matchTimelines")
 
     # Parse through list of matches
     print("parsing matches")
-    # Need to introduce limiter by splitting size by 1k
-    # resultingList = parseMatchJson(fileMatchList)
     # Need to make headers work for both timeline and match
     coreHeader, partHeaders, statsHeaders = getHeaders()
 
     # To initialize CSV's
     print("init CSV")
+    # Probably need to rework header file
     # initCSV(coreHeader, partHeaders, statsHeaders, timelinePartci, timelineEvents)
 
     partitionrun(filematchlist, filematchtimelinelist, 1000)
