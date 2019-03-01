@@ -1,0 +1,504 @@
+{
+    "frameInterval": 60000,
+    "frames": [
+        {
+            "events": [],
+            "participantFrames": {
+                "1": {
+                    "currentGold": 500,
+                    "dominionScore": 0,
+                    "jungleMinionsKilled": 0,
+                    "level": 13,
+                    "minionsKilled": 0,
+                    "participantId": 1,
+                    "position": {
+                        "x": 1123,
+                        "y": 907
+                    },
+                    "teamScore": 0,
+                    "totalGold": 500,
+                    "xp": 12
+                }
+            },
+            "timestamp": 0
+        },
+        {
+            "events": [
+                {
+                    "creatorId": 1,
+                    "timestamp": 0,
+                    "type": "WARD_PLACED",
+                    "wardType": "UNDEFINED"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 5846,
+                        "y": 6396
+                    },
+                    "teamId": 100,
+                    "timestamp": 514,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "TOP_LANE",
+                    "position": {
+                        "x": 981,
+                        "y": 10441
+                    },
+                    "teamId": 100,
+                    "timestamp": 514,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "TOP_LANE",
+                    "position": {
+                        "x": 1512,
+                        "y": 6699
+                    },
+                    "teamId": 100,
+                    "timestamp": 514,
+                    "towerType": "INNER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "BOT_LANE",
+                    "position": {
+                        "x": 10504,
+                        "y": 1029
+                    },
+                    "teamId": 100,
+                    "timestamp": 514,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "BOT_LANE",
+                    "position": {
+                        "x": 6919,
+                        "y": 1483
+                    },
+                    "teamId": 100,
+                    "timestamp": 514,
+                    "towerType": "INNER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "TOP_LANE",
+                    "position": {
+                        "x": 4318,
+                        "y": 13875
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "TOP_LANE",
+                    "position": {
+                        "x": 7943,
+                        "y": 13411
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "INNER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "TOP_LANE",
+                    "position": {
+                        "x": 10481,
+                        "y": 13650
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "BASE_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "BOT_LANE",
+                    "position": {
+                        "x": 13866,
+                        "y": 4505
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "BOT_LANE",
+                    "position": {
+                        "x": 13327,
+                        "y": 8226
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "INNER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "BOT_LANE",
+                    "position": {
+                        "x": 13624,
+                        "y": 10572
+                    },
+                    "teamId": 200,
+                    "timestamp": 514,
+                    "towerType": "BASE_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "killerId": 1,
+                    "position": {
+                        "x": 7681,
+                        "y": 7369
+                    },
+                    "timestamp": 42657,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                }
+            ],
+            "participantFrames": {},
+            "timestamp": 60015
+        },
+        {
+            "events": [
+                {
+                    "assistingParticipantIds": [],
+                    "killerId": 0,
+                    "position": {
+                        "x": 7536,
+                        "y": 7712
+                    },
+                    "timestamp": 73744,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "killerId": 0,
+                    "position": {
+                        "x": 8401,
+                        "y": 8343
+                    },
+                    "timestamp": 98396,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 8955,
+                        "y": 8510
+                    },
+                    "teamId": 200,
+                    "timestamp": 113181,
+                    "towerType": "OUTER_TURRET",
+                    "type": "BUILDING_KILL"
+                }
+            ],
+            "participantFrames": {},
+            "timestamp": 120045
+        },
+        {
+            "events": [
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 8937,
+                        "y": 9186
+                    },
+                    "timestamp": 136909,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 9005,
+                        "y": 9045
+                    },
+                    "timestamp": 140671,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 9767,
+                        "y": 10113
+                    },
+                    "teamId": 200,
+                    "timestamp": 152585,
+                    "towerType": "INNER_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 11134,
+                        "y": 11207
+                    },
+                    "teamId": 200,
+                    "timestamp": 162617,
+                    "towerType": "BASE_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "creatorId": 0,
+                    "timestamp": 167106,
+                    "type": "WARD_PLACED",
+                    "wardType": "UNDEFINED"
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 11064,
+                        "y": 11010
+                    },
+                    "timestamp": 168261,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 11590,
+                        "y": 11316
+                    },
+                    "timestamp": 170043,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 11366,
+                        "y": 11626
+                    },
+                    "timestamp": 174333,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                }
+            ],
+            "participantFrames": {},
+            "timestamp": 180075
+        },
+        {
+            "events": [
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "buildingType": "INHIBITOR_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 11598,
+                        "y": 11667
+                    },
+                    "teamId": 200,
+                    "timestamp": 180636,
+                    "towerType": "UNDEFINED_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 13523,
+                        "y": 12850
+                    },
+                    "timestamp": 193606,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 13655,
+                        "y": 13593
+                    },
+                    "timestamp": 196081,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 13052,
+                        "y": 12612
+                    },
+                    "teamId": 200,
+                    "timestamp": 196642,
+                    "towerType": "NEXUS_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0
+                    ],
+                    "killerId": 0,
+                    "position": {
+                        "x": 13684,
+                        "y": 13543
+                    },
+                    "timestamp": 196972,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "buildingType": "TOWER_BUILDING",
+                    "killerId": 0,
+                    "laneType": "MID_LANE",
+                    "position": {
+                        "x": 12611,
+                        "y": 13084
+                    },
+                    "teamId": 200,
+                    "timestamp": 209414,
+                    "towerType": "NEXUS_TURRET",
+                    "type": "BUILDING_KILL"
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "killerId": 0,
+                    "position": {
+                        "x": 14033,
+                        "y": 14260
+                    },
+                    "timestamp": 215552,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                },
+                {
+                    "assistingParticipantIds": [],
+                    "killerId": 0,
+                    "position": {
+                        "x": 13662,
+                        "y": 14206
+                    },
+                    "timestamp": 218159,
+                    "type": "CHAMPION_KILL",
+                    "victimId": 0
+                }
+            ],
+            "participantFrames": {
+                "1": {
+                    "currentGold": 5668,
+                    "jungleMinionsKilled": 0,
+                    "level": 13,
+                    "minionsKilled": 22,
+                    "participantId": 1,
+                    "totalGold": 5668,
+                    "xp": 12
+                }
+            },
+            "timestamp": 240075
+        }
+    ]
+}

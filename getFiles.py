@@ -135,6 +135,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	for playerACC in playerAccIds: 
 		region = playerAccIds[playerACC][playerAccIds[playerACC].find(":") + 1:].strip()
 		matches, responseCode = getPlayerMatches(region, playerACC, API_KEY, version)
+		print("Checking:", playerACC)
 		# If matches can be found
 		if responseCode == 200:
 			numberOfGames = len(matches['matches'])
@@ -144,7 +145,7 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 			while i < numberOfGames:
 				matchID = matches['matches'][i]['gameId']
 				temp = str(matchID) + "\n"
-				print("Checking:", playerACC, str(matchID))
+				print(str(matchID))
 				if temp not in seenGames:
 					matchData, matchResponseCode = getPlayerMatch(region, matchID, API_KEY, version)
 					matchTimeline, matchTimeResponseCode = getPlayerTimeline(
@@ -181,14 +182,14 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 		else:
 			print("no match data detected", playerACC)
 			with open("data/failedAccounts.txt", "a", encoding="utf8") as failedAcc:
-				failedAcc.write(playerACC)
+				failedAcc.write(playerACC+"\n")
 			failedAcc.close()
 
 """
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-ea7587e8-cf05-4a2d-bcfc-51d4ccb0684e"
+	api_key = "RGAPI-3effa712-b494-4a32-ac7b-d2874d2d1780"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -204,9 +205,9 @@ def main():
 		"RU"   : "ru",
 		"PBE"  : "pbe1",
 	}
-	proList = getProPlayers()
-	seenGames = getSeenGames()
-	# playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
+	prolist = getProPlayers()
+	seengames = getSeenGames()
+	# playerAccIds = getPlayerAccId(prolist, regions, api_key, version)
 	# Temporarily for utility 
 	playerAccIds = {}
 	with open("data/tempAccs.txt", "r",  encoding="utf8") as outfile:
@@ -216,7 +217,8 @@ def main():
 			accID = temp[temp.find("|") + 1 :].strip()
 			playerAccIds[accID] = region
 	outfile.close()
-	getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
+	# intial run to see all files for both timeline and match
+	getAllOfPlayersMatches(playerAccIds, api_key, version, seengames)
 	# Need to do a rerun of failed entries
 	
 if __name__ == "__main__":
