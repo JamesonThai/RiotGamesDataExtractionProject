@@ -112,7 +112,7 @@ def getPlayerAccId(proPlayerList, regions, API_KEY, version):
 	tempString = ""
 	listOfAccounts = {}
 	# Temp read and write for now
-	with open ("data/tempAccs.txt", "w") as outfile:
+	with open ("data/tempAccs.txt", "w",  encoding="utf8") as outfile:
 		for player in proPlayerList:
 			try:
 				playerID = getSummonerName(regions[proPlayerList[player]], player, API_KEY, version)
@@ -135,48 +135,61 @@ def getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames):
 	for playerACC in playerAccIds: 
 		region = playerAccIds[playerACC][playerAccIds[playerACC].find(":") + 1:].strip()
 		matches, responseCode = getPlayerMatches(region, playerACC, API_KEY, version)
-		numberOfGames = len(matches['matches'])
-		# If response code does not equal to 429
-		i = 0
-		while i < numberOfGames: 
-			matchID = matches['matches'][i]['gameId']
-			temp = str(matchID) + "\n"
-			print("Checking:", playerACC, str(matchID))
-			if temp not in seenGames:
-				matchData, matchResponseCode = getPlayerMatch(region, matchID, API_KEY, version)
-				matchTimeline, matchTimeResponseCode = getPlayerTimeline(region, matchID, API_KEY, version)
-				if matchResponseCode == 200 and matchTimeResponseCode == 200:
-					print("Response is 200")
-					matchName = "data/matches/" + str(matchID) + "match.json"
-					matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
-					# Dump that data
-					with open(matchName,"w") as outfile:
-						json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
-					outfile.close()
-					with open(matchTimelineName,"w") as outTime:
-						json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
-					outTime.close()
-					with open("data/seenGameIDs.txt","a") as outSeen:
-						outSeen.write(str(matchID) + "\n")
-					outSeen.close()
+		print("Checking:", playerACC)
+		# If matches can be found
+		if responseCode == 200:
+			numberOfGames = len(matches['matches'])
+			# If response code does not equal to 429
+			i = 0
+			wait = 0
+			while i < numberOfGames:
+				matchID = matches['matches'][i]['gameId']
+				temp = str(matchID) + "\n"
+				print(str(matchID))
+				if temp not in seenGames:
+					matchData, matchResponseCode = getPlayerMatch(region, matchID, API_KEY, version)
+					matchTimeline, matchTimeResponseCode = getPlayerTimeline(
+						region, matchID, API_KEY, version)
+					if matchResponseCode == 200 and matchTimeResponseCode == 200:
+						print("Response is 200")
+						matchName = "data/matches/" + str(matchID) + "match.json"
+						matchTimelineName = "data/matchTimelines/" + str(matchID) + "matchTimeline.json"
+						# Dump that data
+						with open(matchName,"w",  encoding="utf8") as outfile:
+							json.dump(matchData, outfile, sort_keys = True, indent = 4, ensure_ascii=False)
+						outfile.close()
+						with open(matchTimelineName,"w",  encoding="utf8") as outTime:
+							json.dump(matchTimeline, outTime, sort_keys = True, indent = 4, ensure_ascii=False)
+						outTime.close()
+						with open("data/seenGameIDs.txt","a",  encoding="utf8") as outSeen:
+							outSeen.write(str(matchID) + "\n")
+						outSeen.close()
+						wait = 2
+					elif matchResponseCode == 429 and matchTimeResponseCode == 429:
+						print("Waiting for response times")
+						i -= 1
+						wait = 8
+					else:
+						print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
+						with open("data/failedEntries.txt", "a",  encoding="utf8") as unseen:
+							unseen.write(temp)
+						unseen.close()
+						wait = 20
 				else:
-					print("failedEntry detected", matchResponseCode, matchTimeResponseCode)
-					with open("data/failedEntries.txt", "a") as unseen:
-						unseen.write(temp)
-					unseen.close()
-					# Need more time
-					time.sleep(20)
-					# i -= 1
-			i += 1
-			time.sleep(1.5)
-		# Don't unbreak this unless you want 400+ players * # of n games, or atleast for the time being
-		# break
+					wait = 0.01
+				i += 1
+				time.sleep(wait)
+		else:
+			print("no match data detected", playerACC)
+			with open("data/failedAccounts.txt", "a", encoding="utf8") as failedAcc:
+				failedAcc.write(playerACC+"\n")
+			failedAcc.close()
 
 """
 	Temporary Main File For testing Remove Later
 """
 def main():
-	API_KEY = "RGAPI-78166a42-b46f-4015-9641-d99b155e956d"
+	api_key = "RGAPI-3effa712-b494-4a32-ac7b-d2874d2d1780"
 	version = "v4"
 	regions = {
 		"NA"   : "na1",
@@ -192,19 +205,20 @@ def main():
 		"RU"   : "ru",
 		"PBE"  : "pbe1",
 	}
-	proList = getProPlayers()
-	seenGames = getSeenGames()
-	# playerAccIds = getPlayerAccId(proList, regions, API_KEY, version)
+	prolist = getProPlayers()
+	seengames = getSeenGames()
+	# playerAccIds = getPlayerAccId(prolist, regions, api_key, version)
 	# Temporarily for utility 
 	playerAccIds = {}
-	with open("data/tempAccs.txt", "r") as outfile:
+	with open("data/tempAccs.txt", "r",  encoding="utf8") as outfile:
 		for line in outfile:
 			temp = line[line.find("|") + 1:] 
 			region = temp[:temp.find("|")].strip()
 			accID = temp[temp.find("|") + 1 :].strip()
 			playerAccIds[accID] = region
 	outfile.close()
-	getAllOfPlayersMatches(playerAccIds, API_KEY, version, seenGames)
+	# intial run to see all files for both timeline and match
+	getAllOfPlayersMatches(playerAccIds, api_key, version, seengames)
 	# Need to do a rerun of failed entries
 	
 if __name__ == "__main__":
