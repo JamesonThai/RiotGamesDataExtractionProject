@@ -44,27 +44,27 @@ def initCSV(coreHeaders, participantsHeaders, statsHeaders, timelinePartci, time
     # statsHeaders += ['creepsPerMinDeltas', 'damageTakenPerMinDeltas', 'goldPerMinDeltas', 'xpPerMinDeltas',
     # 'xpDiffPerMinDeltas', 'csDiffPerMinDeltas', 'damageTakenDiffPerMinDeltas']
     # core match csv
-    with open('data/dataframes/matchcores.csv', mode='w', encoding="utf8") as csv_file:
+    with open('data/dataframes/matchcores.csv', mode='w', encoding="utf8",  newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(coreHeaders)
     csv_file.close()
     # participants match csv
-    with open('data/dataframes/matchparticipants.csv', mode='w', encoding="utf8") as partici_file:
+    with open('data/dataframes/matchparticipants.csv', mode='w', encoding="utf8",  newline='') as partici_file:
         writer = csv.writer(partici_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(participantsHeaders)
     partici_file.close()
     # stats match
-    with open('data/dataframes/matchstats.csv', mode='w', encoding="utf8") as stats_file:
+    with open('data/dataframes/matchstats.csv', mode='w', encoding="utf8",  newline='') as stats_file:
         writer = csv.writer(stats_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(statsHeaders)
     stats_file.close()
     # timeline participants
-    with open('data/dataframes/timelineParticipants.csv', mode='w', encoding="utf8") as timePar:
+    with open('data/dataframes/timelineParticipants.csv', mode='w', encoding="utf8",  newline='') as timePar:
         writer = csv.writer(timePar, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(timelinePartci)
     timePar.close()
     # timeline Events
-    with open('data/dataframes/timelineEvents.csv', mode='w', encoding="utf8") as timeEvents:
+    with open('data/dataframes/timelineEvents.csv', mode='w', encoding="utf8",  newline='') as timeEvents:
         writer = csv.writer(timeEvents, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(timelineEvents)
     timeEvents.close()
@@ -73,8 +73,8 @@ def initCSV(coreHeaders, participantsHeaders, statsHeaders, timelinePartci, time
 
 # Consider writing this within the file listing in parsing Match JSON
 def updateCSV(listing, file, header):
-    # Be concerend about stats as there are deltas
-    with open(file, mode='a', encoding="utf8") as infile:
+    # Be worried about stats as there are deltas
+    with open(file, mode='a', encoding="utf8", newline='') as infile:
         writer = csv.writer(infile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         listOFValues = []
         for item in listing:
@@ -84,10 +84,10 @@ def updateCSV(listing, file, header):
                     if type(item[col]) == list:
                         # Make list into a string
                         string = " ".join(item[col])
-                        listOFValues.append(string)
+                        listOFValues.append(string.rstrip())
                     # If its not a list
                     else:
-                        listOFValues.append(item[col])
+                        listOFValues.append(item[col].rstrip())
                 else:
                     listOFValues.append('')
             writer.writerow(listOFValues)
@@ -277,34 +277,42 @@ def populateList(category):
                 listing.append(file)
     return listing
 
-def partitionrun(matchlist, matchtimelist, limiter):
+def partitionrun(matchlist, matchtimelist, limiter, core_header, part_headers, stats_headers, timeline_parti, timeline_events):
     k_instances = len(matchlist) / limiter
     remainders = len(matchlist) % limiter
     # print(len(matchlist), k_instances, remainders)
     i = 0
     # Initial run for k instances of limiter size
     while i < k_instances:
-        # print(i, matchlist[i*limiter:(i+1) * limiter])
+        # print(i, matchlist[i*limiter:(i+1) * limiter][0])
         # print("remainder", i, len(matchlist[i*limiter:]))
         resulting_list = parseMatchJson(matchlist[i * limiter: (i+1) * limiter])
         resulting_timeline = parseTimeline(matchtimelist[i * limiter: (i+1) * limiter])
-        break
-        # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
-        # timelinePartci.append("gameId")
-        # timelineEvents.append("gameId")
         # Actual updating
-        # updateCSV(resultingList[0], "data/dataframes/matchcores.csv", coreHeader)
-        # updateCSV(resultingList[1], "data/dataframes/matchparticipants.csv", partHeaders)
-        # resultingList[2].pop(0)
-        # n = resultingList[2]
-        # updateCSV(n, "data/dataframes/matchstats.csv", statsHeaders)
-        # resultTimelines[0].pop(0)
-        # resultTimelines[1].pop(0)
-        # updateCSV(resultTimelines[0], "data/dataframes/timelineEvents.csv", timelineEvents)
-        # updateCSV(resultTimelines[1], "data/dataframes/timelineParticipants.csv", timelinePartci)
+        updateCSV(resulting_list[0], "data/dataframes/matchcores.csv", core_header)
+        updateCSV(resulting_list[1], "data/dataframes/matchparticipants.csv", part_headers)
+        resulting_list[2].pop(0)
+        n = resulting_list[2]
+        updateCSV(n, "data/dataframes/matchstats.csv", stats_headers)
+        resulting_timeline[0].pop(0)
+        resulting_timeline[1].pop(0)
+        updateCSV(resulting_timeline[0], "data/dataframes/timelineEvents.csv", timeline_events)
+        updateCSV(resulting_timeline[1], "data/dataframes/timelineParticipants.csv", timeline_parti)
         i += 1
     i -= 1
-    # print(i)
+    # Do the Remainders
+    result_match = parseMatchJson(matchlist[i * limiter + 1:])
+    result_timeline = parseTimeline(matchtimelist[i * limiter + 1:])
+    updateCSV(result_match[0], "data/dataframes/matchcores.csv", core_header)
+    updateCSV(result_match[1], "data/dataframes/matchparticipants.csv", part_headers)
+    result_match[2].pop(0)
+    n = result_match[2]
+    updateCSV(n, "data/dataframes/matchstats.csv", stats_headers)
+    result_timeline[0].pop(0)
+    result_timeline[1].pop(0)
+    updateCSV(result_timeline[0], "data/dataframes/timelineEvents.csv", timeline_events)
+    updateCSV(result_timeline[1], "data/dataframes/timelineParticipants.csv", timeline_parti)
+
 def main():
     filematchlist = populateList("matches")
     filematchtimelinelist = populateList("matchTimelines")
@@ -319,23 +327,7 @@ def main():
     print("init CSV")
     # Probably need to rework header file
     initCSV(core_header, part_headers, stats_headers, timeline_parti, timeline_events)
-
-    # partitionrun(filematchlist, filematchtimelinelist, 1000)
-
-    # resultTimelines, timelinePartci, timelineEvents = parseTimeline(fileMatchTimelineList)
-    # timelinePartci.append("gameId")
-    # timelineEvents.append("gameId")
-    # Actual updating
-    # updateCSV(resultingList[0], "data/dataframes/matchcores.csv", coreHeader)
-    # updateCSV(resultingList[1], "data/dataframes/matchparticipants.csv", partHeaders)
-    # resultingList[2].pop(0)
-    # n = resultingList[2]
-    # updateCSV(n, "data/dataframes/matchstats.csv", statsHeaders)
-    # resultTimelines[0].pop(0)
-    # resultTimelines[1].pop(0)
-    # updateCSV(resultTimelines[0], "data/dataframes/timelineEvents.csv", timelineEvents)
-    # updateCSV(resultTimelines[1], "data/dataframes/timelineParticipants.csv", timelinePartci)
-
+    partitionrun(filematchlist, filematchtimelinelist, 1000, core_header, part_headers, stats_headers, timeline_parti, timeline_events)
 
 if __name__ == "__main__":
     main()
