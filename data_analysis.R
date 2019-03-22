@@ -39,6 +39,15 @@ main <- function(){
     library(tictoc)
   }
 
+  "
+    match.cores[is.na(match.cores[,"queueId"]) | is.na(match.cores[,"seasonId"])]
+  print("match.cores columns")
+  for (i in names(match.cores)){
+  nan.value <- sum(is.na(match.cores[,i]))
+    print(paste(i, nan.value, sep=": "))
+  }
+  "
+
   # getting all of the cores into their respective dataframes
   print("Main Program Start")
   results <- get_data()

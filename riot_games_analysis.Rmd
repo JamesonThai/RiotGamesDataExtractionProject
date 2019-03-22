@@ -49,25 +49,46 @@ Getting dataframes from specific files
 
 # Brief Intoduction into the dataset
 
+# Dataframes
+
 ## match.cores
+
+### Contents
   Match cores has the following columns
-  1. gameCreation
-  2. gameDuration
-  3. gameVersion
-  4. mapId
-  5. gameMode
-  6. gameType
-  7. seasonId
-  8. platformId
-  9. gameId
+  1.  gameCreation
+  2.  gameDuration
+  3.  gameVersion
+  4.  mapId
+  5.  gameMode
+  6.  gameType
+  7.  seasonId
+  8.  platformId
+  9.  gameId
+  10. queueId
   
 
 ```{r}
   head(match.cores)
 ```
 
-We will be looking at class gameMode and where the mapId is 11 because we're mainly looking at classic game mode on Summoner Rift. For now will be running python code again because I forgot to include what game type it is being a ranked or normal game.
+### Data Values
 
+```{r}
+  print("match.cores columns")
+  for (i in names(match.cores)){
+    nan.value <- sum(is.na(match.cores[,i]))
+    print(paste(i, nan.value, sep=": "))
+  }
+```
+
+For now we're going to drop rows with nan values for the seasonId and queueId
+
+```{r}
+  match.cores[is.na(match.cores[,"queueId"]) | is.na(match.cores[,"seasonId"])]
+```
+
+
+## match.participants
 
 ```{r}
   head(match.parti)
