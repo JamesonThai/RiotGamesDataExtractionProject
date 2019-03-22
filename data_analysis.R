@@ -35,12 +35,11 @@ main <- function(){
     print("packages checked")
     library(ggplot2)
     library(tidyverse)
-    install.packages("tictoc", repos = "http://cran.us.r-project.org")
+    # install.packages("tictoc", repos = "http://cran.us.r-project.org")
     library(tictoc)
   }
 
   # getting all of the cores into their respective dataframes
-  tic("Main Program")
   print("Main Program Start")
   results <- get_data()
   match.cores <- results[1]
@@ -48,11 +47,9 @@ main <- function(){
   match.stats <- results[3]
   time.events <- results[4]
   time.partis <- results[5]
-  
-  
+
   
   print("Main Program End")
-  toc()
   
 
 }
