@@ -1,4 +1,4 @@
----
+ ---
 title: "R Notebook"
 output: html_notebook
 ---
@@ -15,20 +15,16 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 
 Install the following packages if they're not already installed
 
-```{r}
-  package.list <- c("ggplot2", "tidyverse")
-  new.packages <- package.list[!(package.list %in% installed.packages()[,"Package"])]
-  if (length(new.packages)) {
-    install.packages(new.packages, dependencies = TRUE)
-  } else {
-    print("packages checked")
-    library(ggplot2)
-    library(tidyverse)
-    library(tictoc)
-  }
+```{r message=FALSE, warning= FALSE }
+if (!require("devtools")) install.packages("devtools")
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("ggplot2")) install.packages("ggplot2")
+if(!require("tictoc")) install.packages("tictoc")
+print("Finished installing packages")
 ```
 
-Getting dataframes from specific files
+
+Getting dataframes from specific files within the dataframes folder
 ```{r}
   tic("match.cores")
   if (!exists('match.cores')) match.cores <- read_csv("data/dataframes/matchcores.csv")
@@ -84,7 +80,8 @@ Getting dataframes from specific files
 For now we're going to drop rows with nan values for the seasonId and queueId
 
 ```{r}
-  match.cores[is.na(match.cores[,"queueId"]) | is.na(match.cores[,"seasonId"])]
+  match.cores.na <- match.cores[rowSums(is.na(match.cores)) > 0 ,]
+  print(match.cores.na)
 ```
 
 
@@ -94,14 +91,17 @@ For now we're going to drop rows with nan values for the seasonId and queueId
   head(match.parti)
 ```
 
+## match.statistics
 ```{r}
   head(match.stats)
 ```
 
+## timeline.events
 ```{r}
   head(time.events)
 ```
 
+## timeline.participants
 ```{r}
   head(time.partis)
 ```
