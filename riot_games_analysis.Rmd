@@ -1,4 +1,4 @@
- ---
+---
 title: "R Notebook"
 output: html_notebook
 ---
@@ -21,27 +21,30 @@ if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("ggplot2")) install.packages("ggplot2")
 if(!require("tictoc")) install.packages("tictoc")
 if (!require("plyr")) install.packages("plyr")
+if (!require("highcharter")) install.packages("highcharter")
+# if (!require("countrycode")) install.packages(("countrycode"))
+# if(!require("geofacet")) install.packages(("geofacet"))
 print("Finished installing packages")
 ```
 
 
 Getting dataframes from specific files within the dataframes folder
 ```{r}
-  tic("match.cores")
-  if (!exists('match.cores')) match.cores <- read_csv("data/dataframes/matchcores.csv")
-  toc()
-  tic("match.parti")
-  if (!exists('match.parti')) match.parti <- read_csv("data/dataframes/matchparticipants.csv")
-  toc()
-  tic("match.stats")
-  if (!exists('match.stats')) match.stats <- read_csv("data/dataframes/matchstats.csv")
-  toc()
-  tic("time.events")
-  if (!exists('time.events')) time.events <- read_csv("data/dataframes/timelineEvents.csv")
-  toc()
-  tic("time.partis")
-  if (!exists('time.partis')) time.partis <- read_csv("data/dataframes/timelineParticipants.csv")
-  toc()
+tic("match.cores")
+if (!exists('match.cores')) match.cores <- read_csv("data/dataframes/matchcores.csv")
+toc()
+tic("match.parti")
+if (!exists('match.parti')) match.parti <- read_csv("data/dataframes/matchparticipants.csv")
+toc()
+tic("match.stats")
+if (!exists('match.stats')) match.stats <- read_csv("data/dataframes/matchstats.csv")
+toc()
+tic("time.events")
+if (!exists('time.events')) time.events <- read_csv("data/dataframes/timelineEvents.csv")
+toc()
+tic("time.partis")
+if (!exists('time.partis')) time.partis <- read_csv("data/dataframes/timelineParticipants.csv")
+toc()
 ```
 
 # Brief Intoduction into the dataset
@@ -51,38 +54,38 @@ Getting dataframes from specific files within the dataframes folder
 ## match.cores
 
 ### Contents
-  Match cores has the following columns
-  1.  gameCreation
-  2.  gameDuration
-  3.  gameVersion
-  4.  mapId
-  5.  gameMode
-  6.  gameType
-  7.  seasonId
-  8.  platformId
-  9.  gameId
-  10. queueId
-  
+Match cores has the following columns
+1.  gameCreation
+2.  gameDuration
+3.  gameVersion
+4.  mapId
+5.  gameMode
+6.  gameType
+7.  seasonId
+8.  platformId
+9.  gameId
+10. queueId
+
 
 ```{r}
-  head(match.cores)
+head(match.cores)
 ```
 
 ### Data Values
 
 ```{r}
-  print("match.cores columns")
-  for (i in names(match.cores)){
-    nan.value <- sum(is.na(match.cores[,i]))
-    print(paste(i, nan.value, sep=": "))
-  }
+print("match.cores columns")
+for (i in names(match.cores)){
+  nan.value <- sum(is.na(match.cores[,i]))
+  print(paste(i, nan.value, sep=": "))
+}
 ```
 
 For now we're going to drop rows with nan values for the seasonId and queueId
 
 ```{r}
-  match.cores.na <- match.cores[rowSums(is.na(match.cores)) > 0 ,]
-  print(match.cores.na)
+match.cores.na <- match.cores[rowSums(is.na(match.cores)) > 0 ,]
+print(match.cores.na)
 ```
 
 In these rows there is no queue ID or a season ID listed. Probably go back and investigate into these values when I have the time. 
@@ -90,112 +93,96 @@ In these rows there is no queue ID or a season ID listed. Probably go back and i
 Counting number of instances in each row 
 
 ```{r}
-  # count(match.cores, c('gameMode', 'mapId', 'queueId', 'platformId'))
-  gamemode.count <- count(match.cores, c('gameMode'))
-  map.id.count <- count(match.cores, c('mapId'))
-  queue.id.count <- count(match.cores, c('queueId'))
-  platform.id.count <- count(match.cores, c('platformId'))
-  
-  queue.constants <- c("Custom games", "Howling Abyss 1v1", "Howling Abyss 2v2","Summoner's Rift 6v6","Summoner's Rift Ultra Rapid Fire", "Howling Abyss One For All", "Summoner's Rift Co-op vs AI Ultra Rapid Fire", "Twisted Treeline 6v6 Hexakill", "Summoner's Rift Nemesis", "Summoner's Rift Black Market Brawlers", "Crystal Scar Definitely Not Dominion", "Summoner's Rift All Random", "Summoner's Rift 5v5 Draft Pick", "Summoner's Rift 5v5 Ranked Solo", "Summoner's Rift 5v5 Blind Solo", "Summoner's Rift 5v5 Ranked Flex", "Howling Abyss 5v5 ARAM", "Twisted Treeline 3v3 Blind Pick", "Twisted Treeline 3v3 Ranked Flex", "Summoner's Rift Blood Hunt Assassin", "Cosmic Ruins Dark Star", "Summoner's Rift Clash", "Twisted Treeline Co-op vs. AI Intermediate", "Twisted Treeline Co-op vs. AI Intro", "Twisted Treeline Co-op vs. AI Beginner", "Summoner's Rift Howling Abyss 1v1", "Summoner's Rift Co-op vs. AI Beginner", "Summoner's Rift 6v6 Co-op vs. AI Intermediate", "Summoner's Rift ARURF", "Crystal Scar Ascension", "Howling Abyss Legend of the Poro King", "Summoner's Rift Nexus Siege", "Summoner's Rift Doom Bots Voting", "Summoner's Rift Doom Bots Standard", "Valoran City Park Star Guardian Invasion: Normal", "Valoran City Park Star Guardian Invasion: Onslaught", "Overcharge PROJECT Hunters", "Summoner's Rift Snow ARURF", "Summoner's Rift One for All", "Crash Site Odyssey Extraction: Intro", "Crash Site Odyssey Extraction: Cadet", "Crash Site Odyssey Extraction: Crewmember",  "Crash Site Odyssey Extraction: Captain", "Crash Site Odyssey Extraction: Onslaught","Nexus Blitz" )
-  names(queue.constants) <- c("0","72","73",'75','76','78','83','93','310','313','317','325','400','420','430','440','450','460','470','600','610','700','800','810','820','830','840','850','900','910','920','940','950','960','980','990','1000','1010','1020','1030','1040','1050','1060','1070','1200')
+# count(match.cores, c('gameMode', 'mapId', 'queueId', 'platformId'))
+gamemode.count <- count(match.cores, c('gameMode'))
+map.id.count <- count(match.cores, c('mapId'))
+queue.id.count <- count(match.cores, c('queueId'))
+platform.id.count <- count(match.cores, c('platformId'))
 
-  gamemode.plot <- ggplot(data = gamemode.count, aes(x = gameMode, y = freq)) + 
-    geom_bar(stat="identity", fill = "steelblue") + 
-    theme_light() + 
-    coord_flip() + 
-    geom_text(aes(label = freq), hjust = -.5) + 
-    scale_y_continuous(expand = c(0,0), 
-                       limits = c(0, max(gamemode.count$freq) * 1.2)) +
-    labs(title="Played gametypes") + 
-    # tweaking theme
-    theme(panel.grid = element_blank(),
-          panel.border = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.x = element_blank(),
-          axis.text.y = element_text(size = 9))
+gamemode.plot <- ggplot(data = gamemode.count, aes(x = gameMode, y = freq)) + 
+  geom_bar(stat="identity", fill = "steelblue") + 
+  theme_light() + 
+  coord_flip() + 
+  geom_text(aes(label = freq), hjust = -.5) + 
+  scale_y_continuous(expand = c(0,0), 
+                     limits = c(0, max(gamemode.count$freq) * 1.2)) +
+  labs(title="Played gametypes") + 
+  # tweaking theme
+  theme(panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 9))
 
-  mapid.plot <- ggplot(data = map.id.count, aes(x = mapId, y = freq)) + 
-    geom_bar(stat="identity", fill = "steelblue") + 
-    theme_light() + 
-    coord_flip() + 
-    geom_text(aes(label = freq), hjust = -.5) + 
-    scale_y_continuous(expand = c(0,0), 
-                       limits = c(0, max(map.id.count$freq) * 1.2)) +
-    labs(title="Played gametypes") + 
-    # tweaking theme
-    theme(panel.grid = element_blank(),
-          panel.border = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.x = element_blank(),
-          axis.text.y = element_text(size = 9))
-
-  queue.id.plot <- ggplot(data = queue.id.count, aes(x = queueId, y = freq)) + 
-    geom_bar(stat="identity", fill = "steelblue") + 
-    theme_light() + 
-    # coord_flip() + 
-    # geom_text(aes(label = freq), hjust = -.5) + 
-    # scale_y_continuous(expand = c(0,0), 
-    #                    limits = c(0, max(queue.id.count$freq) * 1.2)) +
-    # labs(title="Played gametypes") + 
-    # scale_x_continuous(breaks=pretty_breaks())
-    # tweaking theme
-    theme(panel.grid = element_blank(),
-          panel.border = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.y = element_blank(),
-          axis.text.x = element_text(size = 9))
-  
-   platform.id.plot <- ggplot(data = platform.id.count, aes(x = platformId, y = freq)) + 
-    geom_bar(stat="identity", fill = "steelblue") + 
-    theme_light() + 
-    coord_flip() + 
-    geom_text(aes(label = freq), hjust = -.5) + 
-    scale_y_continuous(expand = c(0,0), 
-                       limits = c(0, max(platform.id.count$freq) * 1.2)) +
-    labs(title="Played gametypes") + 
-    # tweaking theme
-    theme(panel.grid = element_blank(),
-          panel.border = element_blank(),
-          axis.ticks = element_blank(),
-          axis.text.x = element_blank(),
-          axis.text.y = element_text(size = 9)) 
 ```
 
 ```{r}
-  gamemode.plot
+gamemode.plot
 ```
 
 ```{r}
+queue.constants <- c("Custom games", "Howling Abyss 1v1", "Howling Abyss 2v2","Summoner's Rift 6v6","Summoner's Rift Ultra Rapid Fire", "Howling Abyss One For All", "Summoner's Rift Co-op vs AI Ultra Rapid Fire", "Twisted Treeline 6v6 Hexakill", "Summoner's Rift Nemesis", "Summoner's Rift Black Market Brawlers", "Crystal Scar Definitely Not Dominion", "Summoner's Rift All Random", "Summoner's Rift 5v5 Draft Pick", "Summoner's Rift 5v5 Ranked Solo", "Summoner's Rift 5v5 Blind Solo", "Summoner's Rift 5v5 Ranked Flex", "Howling Abyss 5v5 ARAM", "Twisted Treeline 3v3 Blind Pick", "Twisted Treeline 3v3 Ranked Flex", "Summoner's Rift Blood Hunt Assassin", "Cosmic Ruins Dark Star", "Summoner's Rift Clash", "Twisted Treeline Co-op vs. AI Intermediate", "Twisted Treeline Co-op vs. AI Intro", "Twisted Treeline Co-op vs. AI Beginner", "Summoner's Rift Howling Abyss 1v1", "Summoner's Rift Co-op vs. AI Beginner", "Summoner's Rift 6v6 Co-op vs. AI Intermediate", "Summoner's Rift ARURF", "Crystal Scar Ascension", "Howling Abyss Legend of the Poro King", "Summoner's Rift Nexus Siege", "Summoner's Rift Doom Bots Voting", "Summoner's Rift Doom Bots Standard", "Valoran City Park Star Guardian Invasion: Normal", "Valoran City Park Star Guardian Invasion: Onslaught", "Overcharge PROJECT Hunters", "Summoner's Rift Snow ARURF", "Summoner's Rift One for All", "Crash Site Odyssey Extraction: Intro", "Crash Site Odyssey Extraction: Cadet", "Crash Site Odyssey Extraction: Crewmember",  "Crash Site Odyssey Extraction: Captain", "Crash Site Odyssey Extraction: Onslaught","Nexus Blitz", "Summoner's Rift 5v5 Blind Pick", "Twisted Treeline 3v3 Normal", "Twisted Treeline 3v3 Ranked Flex","Summoner's Rift Co-op vs AI Intro", "Summoner's Rift Co-op vs AI Beginner", "Summoner's Rift Co-op vs AI Intermediate", "Summoner's Rift 5v5 Ranked Team", "Twisted Treeline Co-op vs AI","Howling Abyss 5v5 ARAM", "Summoner's Rift One for All" , "Summoner's Rift Doom Bots Rank 1", "Howling Abyss Legend of the Poro King", "Summoner's Rift Nexus Siege", "Summoner's Rift ARURF", "Summoner's Rift 5v5 Ranked Dynamic")
+names(queue.constants) <- c("0","72","73",'75','76','78','83','98','310','313','317','325','400','420','430','440','450','460','470','600','610','700','800','810','820','830','840','850','900','910','920','940','950','960','980','990','1000','1010','1020','1030','1040','1050','1060','1070','1200', '2', '8', '9', '31', '32', '33', '42', '52','65', '70', '91', '300', '315', '318', '410')
+for (i in 1:nrow(queue.id.count)){
+  value <- queue.id.count$queueId[i] 
+  if (value %in% names(queue.constants)) queue.id.count$queueId[queue.id.count$queueId == toString(value)] <- queue.constants[[toString(value)]]
+}
+queue.id.count <- ddply(queue.id.count, "queueId", numcolwise(sum))
+
+queue.id.plot <- ggplot(data = queue.id.count, aes(x = queueId, y = freq, width = .1)) + 
+  geom_bar(stat="identity", fill = "steelblue", width = .5) + 
+  theme_light() + 
+  coord_flip() +
+  geom_text(aes(label = freq), hjust = -.5, size = 2) +
+  scale_y_continuous(expand = c(0,0),
+                     limits = c(0, max(queue.id.count$freq) * 1.2)) +
+  labs(title="Played Queue Id's") +
+  # tweaking theme
+  theme(panel.grid = element_blank(),
+        panel.border = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.y = element_text(size = 6.5))
 queue.id.plot
-# queue.id.count
+```
+
+```{r}
+platform.id.count
+
+```
+
+Platform ID's
+```{r}
+eu.west <-list("Algeria","Andorra","Austria","Belgium","Benin","Burkina Faso","Cameroon" , "Central African Republic" , "Chad" ,"Djibouti","France","Gabon","Gambia","Germany","Ghana","Gibraltar","Guinea","Ireland","Italy","Ivory Coast","Liechtenstein",
+"Luxembourg","Madagascar","Malawi","Mali","Malta","Mauritius","Monaco","Morocco","Namibia","Netherlands","Niger","Portugal",
+"Republic of the Congo","San Marino","Seychelles","Sierra Leone","South Africa","Spain","Sudan","Switzerland","Togo", "Tunisia","United Kingdom","Vatican","Zambia")
 ```
 
 ## match.participants
 
 ```{r}
-  head(match.parti)
+head(match.parti)
 ```
 
 ```{r}
-  match.parti.na <- match.parti[rowSums(is.na(match.parti)) > 0 ,]
-  print(nrow(match.parti.na))
-  print(match.parti.na)
+match.parti.na <- match.parti[rowSums(is.na(match.parti)) > 0 ,]
+print(nrow(match.parti.na))
+print(match.parti.na)
 ```
 
 As a result for searching for nan rows, it looks like platform ID are NA values. Two cases could be happening, one is that I incorrectly typed one of the id's for the column name or that a column value had been depreciated in the more recent RIOT API update. 
 
 ## match.statistics
 ```{r}
-  head(match.stats)
+head(match.stats)
 ```
 
 ## timeline.events
 ```{r}
-  head(time.events)
+head(time.events)
 ```
 
 ## timeline.participants
 ```{r}
-  head(time.partis)
+head(time.partis)
 ```
 
