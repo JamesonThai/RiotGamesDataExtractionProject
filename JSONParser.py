@@ -175,19 +175,6 @@ def parseMatchJson(listOfMatchFiles):
 
         outfile.close()
         coreList.append(core)
-
-        # check for missing values can take out later
-        # for key in core:
-        # print(key, core[key])
-        # for parti in participantList:
-        # for item in parti:
-        # print(item, parti[item])
-        # break
-        # break
-        # for st in statsList:
-        # for item in st:
-        # print(item, st[item])
-        # break
         core = {}
 
         matchListData.append(coreList)
@@ -280,12 +267,9 @@ def populateList(category):
 def partitionrun(matchlist, matchtimelist, limiter, core_header, part_headers, stats_headers, timeline_parti, timeline_events):
     k_instances = len(matchlist) / limiter
     remainders = len(matchlist) % limiter
-    # print(len(matchlist), k_instances, remainders)
     i = 0
     # Initial run for k instances of limiter size
     while i < k_instances:
-        # print(i, matchlist[i*limiter:(i+1) * limiter][0])
-        # print("remainder", i, len(matchlist[i*limiter:]))
         resulting_list = parseMatchJson(matchlist[i * limiter: (i+1) * limiter])
         resulting_timeline = parseTimeline(matchtimelist[i * limiter: (i+1) * limiter])
         # Actual updating
@@ -297,7 +281,7 @@ def partitionrun(matchlist, matchtimelist, limiter, core_header, part_headers, s
         resulting_timeline[0].pop(0)
         resulting_timeline[1].pop(0)
         updateCSV(resulting_timeline[0], "data/dataframes/timelineEvents.csv", timeline_events)
-        updateCSV(resulting_timeline[1], "data/dataframes/timelineParticipants.csv", timeline_parti)
+        updateCSV(resulting_timeline[1], "data/dataframes/timelineParticipants.csv", timeline+_parti)
         i += 1
     i -= 1
     # Do the Remainders
@@ -326,6 +310,7 @@ def main():
     # To initialize CSV's
     print("init CSV")
     # Probably need to rework header file
+
     initCSV(core_header, part_headers, stats_headers, timeline_parti, timeline_events)
     partitionrun(filematchlist, filematchtimelinelist, 1000, core_header, part_headers, stats_headers, timeline_parti, timeline_events)
 
